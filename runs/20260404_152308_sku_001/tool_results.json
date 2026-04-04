@@ -1,0 +1,40 @@
+[
+  {
+    "name": "create_opt_task",
+    "arguments": {
+      "product_id": "SKU_001",
+      "task_type": "creative_refresh",
+      "priority": "high",
+      "reason": "hero image needs clearer focal point and cleaner selling message"
+    },
+    "success": true,
+    "status_code": 200,
+    "response": {
+      "task_id": "TASK_001",
+      "product_id": "SKU_001",
+      "task_type": "creative_refresh",
+      "priority": "high",
+      "status": "created"
+    },
+    "error": null
+  },
+  {
+    "name": "generate_ad_copy",
+    "arguments": {
+      "product_id": "SKU_001",
+      "market": "US",
+      "angle": "benefit_driven",
+      "num_variants": 2
+    },
+    "success": true,
+    "status_code": 200,
+    "response": {
+      "product_id": "SKU_001",
+      "copies": [
+        "[US] Stay cool through long commutes with a lightweight hands-free fan. (Product: SKU_001)",
+        "[US] Beat the heat with portable airflow designed for busy summer days. (Product: SKU_001)"
+      ]
+    },
+    "error": null
+  }
+]

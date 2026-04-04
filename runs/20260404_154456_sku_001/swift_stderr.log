@@ -1,0 +1,46 @@
+++ dirname /home/ly/projects/seller-copilot-agent/train/infer.sh
++ source /home/ly/projects/seller-copilot-agent/train/common.sh
+++ set -euo pipefail
+++ MODEL_NAME_DEFAULT=Qwen/Qwen2.5-VL-7B-Instruct
+++ ADAPTER_PATH_DEFAULT=output/seller_copilot_lora
+++ AGENT_TEMPLATE_DEFAULT=qwen2_vl
+++ TOOLS_PROMPT_DEFAULT=react_en
+++ SEED_DEFAULT=7
+++ INFER_BACKEND_DEFAULT=pt
+++ MAX_NEW_TOKENS_DEFAULT=512
+++ TEMPERATURE_DEFAULT=0
+++ LOAD_ARGS_DEFAULT=false
++ MODEL_NAME=Qwen/Qwen2.5-VL-7B-Instruct
++ ADAPTER_PATH=/home/ly/projects/seller-copilot-agent/output/seller_copilot_lora
++ AGENT_TEMPLATE=qwen2_vl
++ TOOLS_PROMPT=react_en
++ SEED=7
++ DATASET_PATH=/home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_request.jsonl
++ RESULT_PATH=/home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_result.jsonl
++ INFER_BACKEND=pt
++ MAX_NEW_TOKENS=512
++ TEMPERATURE=0.0
++ LOAD_ARGS=false
++ print_runtime_alignment
++ echo MODEL_NAME=Qwen/Qwen2.5-VL-7B-Instruct
++ echo ADAPTER_PATH=/home/ly/projects/seller-copilot-agent/output/seller_copilot_lora
++ echo AGENT_TEMPLATE=qwen2_vl
++ echo TOOLS_PROMPT=react_en
++ echo SEED=7
++ echo INFER_BACKEND=pt
++ echo MAX_NEW_TOKENS=512
++ echo TEMPERATURE=0.0
++ echo LOAD_ARGS=false
++ cmd=(swift infer --model "$MODEL_NAME" --infer_backend "$INFER_BACKEND" --seed "$SEED" --max_new_tokens "$MAX_NEW_TOKENS" --temperature "$TEMPERATURE" --stream false)
++ '[' -n /home/ly/projects/seller-copilot-agent/output/seller_copilot_lora ']'
++ cmd+=(--adapters "$ADAPTER_PATH")
++ '[' -n qwen2_vl ']'
++ cmd+=(--agent_template "$AGENT_TEMPLATE")
++ '[' -n /home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_request.jsonl ']'
++ cmd+=(--val_dataset "$DATASET_PATH")
++ '[' -n /home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_result.jsonl ']'
++ cmd+=(--result_path "$RESULT_PATH")
++ '[' false = true ']'
++ cmd+=(--load_args false)
++ swift infer --model Qwen/Qwen2.5-VL-7B-Instruct --infer_backend pt --seed 7 --max_new_tokens 512 --temperature 0.0 --stream false --adapters /home/ly/projects/seller-copilot-agent/output/seller_copilot_lora --agent_template qwen2_vl --val_dataset /home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_request.jsonl --result_path /home/ly/projects/seller-copilot-agent/runs/20260404_154456_sku_001/swift_result.jsonl --load_args false
+/home/ly/projects/seller-copilot-agent/train/infer.sh: line 49: swift: command not found

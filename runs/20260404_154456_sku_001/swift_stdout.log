@@ -1,0 +1,9 @@
+MODEL_NAME=Qwen/Qwen2.5-VL-7B-Instruct
+ADAPTER_PATH=/home/ly/projects/seller-copilot-agent/output/seller_copilot_lora
+AGENT_TEMPLATE=qwen2_vl
+TOOLS_PROMPT=react_en
+SEED=7
+INFER_BACKEND=pt
+MAX_NEW_TOKENS=512
+TEMPERATURE=0.0
+LOAD_ARGS=false
