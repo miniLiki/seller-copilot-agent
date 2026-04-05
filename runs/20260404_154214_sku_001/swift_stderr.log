@@ -1,5 +1,0 @@
-/home/ly/projects/seller-copilot-agent/train/infer.sh: line 1: ﻿#!/usr/bin/env: No such file or directory
-++ dirname /home/ly/projects/seller-copilot-agent/train/infer.sh
-+ source /home/ly/projects/seller-copilot-agent/train/common.sh
-++ '﻿#!/usr/bin/env' bash
-/home/ly/projects/seller-copilot-agent/train/common.sh: line 1: ﻿#!/usr/bin/env: No such file or directory
