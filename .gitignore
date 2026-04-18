@@ -1,1 +1,23 @@
 .vscode/
+
+# Local Python environment
+.venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Runtime outputs and logs
+runs/
+logs/
+*.log
+
+# Local secrets and SSH keys
+*.pem
+*.key
+*.pub
+id_rsa
+id_ed25519
+eval "$(ssh-agent -s)"
+eval "$(ssh-agent -s)".pub
