@@ -70,7 +70,7 @@ npm run dev
 创建数据库：
 
 ```bash
-export PGPASSWORD=qwer5358
+export PGPASSWORD=<your_postgres_password>
 createdb -h localhost -p 5432 -U postgres seller_copilot
 ```
 
@@ -84,13 +84,13 @@ cp .env.example .env
 
 ```env
 SELLER_COPILOT_STORAGE=postgres
-DATABASE_URL=postgresql://postgres:qwer5358@localhost:5432/seller_copilot
+DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/seller_copilot
 ```
 
 执行 migration 并插入 100 条演示数据：
 
 ```bash
-export DATABASE_URL=postgresql://postgres:qwer5358@localhost:5432/seller_copilot
+export DATABASE_URL=postgresql://postgres:<your_postgres_password>@localhost:5432/seller_copilot
 alembic upgrade head
 python -m tools.seed_postgres --reset --count 100
 ```
