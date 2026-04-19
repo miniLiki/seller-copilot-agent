@@ -3,6 +3,11 @@
 # Local Python environment
 .venv/
 
+# Frontend dependencies and build output
+node_modules/
+web/node_modules/
+web/dist/
+
 # Python caches
 __pycache__/
 *.py[cod]

@@ -35,6 +35,9 @@
 ## 功能特性
 
 - 基于 FastAPI 的 mock 工具服务，支持商品信息查询、库存查询、整改任务创建和广告文案生成
+- 新增库存平台 API：商品模板、SKU、渠道刊登、多仓库存、库存流水、销售订单、采购、收货、调拨、调整、盘点、审批、审计和同步监控
+- legacy `/product/{product_id}` 和 `/inventory/{product_id}` 保持稳定，内部从 SKU + warehouse 库存模型聚合
+- React 前端提供 catalog、库存总览、多仓明细、库存流水、采购、调拨、盘点、调整和同步监控页面
 - 基于 `data/kb` 的本地确定性 Markdown 检索
 - 输出严格 JSON 的 mock 运行时模型
 - 具备模块化终端输出的 CLI 演示
@@ -52,6 +55,32 @@ pip install -r requirements.txt
 uvicorn tools.app:app --reload --port 8000
 ```
 
+## 启动前端
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+打开 `http://localhost:5173`。默认 API 地址是 `http://localhost:8000`，可通过 `VITE_API_BASE_URL` 覆盖。
+
+## 一键本地栈
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+服务地址：
+
+- API: `http://localhost:8000`
+- API docs: `http://localhost:8000/docs`
+- Web: `http://localhost:5173`
+- PostgreSQL: `localhost:5432`, database/user/password 均见 `.env.example`
+
+当前 API 默认仍是 mock-first in-memory 运行模式，保证 CLI demo 无需数据库即可运行。`alembic/versions/0001_inventory_platform.py` 提供 PostgreSQL 目标表结构，用于后续替换持久化 repository。
+
 ## 运行 CLI 演示
 
 ```bash
@@ -64,6 +93,51 @@ python -m demo.cli_demo \
 ## 训练脚本
 
 参见 `train/README.md`。
+
+## 库存平台 API
+
+主数据 CRUD：
+
+```text
+GET/POST /api/product-templates
+GET/POST/PATCH/DELETE /api/skus
+GET/POST/PATCH /api/warehouses
+GET/POST /api/suppliers
+GET/POST /api/channel-accounts
+GET/POST /api/channel-listings
+GET/POST /api/inventory-policies
+```
+
+库存业务命令：
+
+```text
+POST /api/inventory/receive
+POST /api/inventory/allocate
+POST /api/inventory/release
+POST /api/inventory/ship
+POST /api/inventory/adjust
+POST /api/inventory/damage
+POST /api/inventory/return
+GET  /api/inventory/balances
+GET  /api/inventory/movements
+```
+
+业务流程：
+
+```text
+POST /api/sales-orders
+POST /api/sales-orders/{id}/cancel
+POST /api/sales-orders/{id}/ship
+POST /api/purchase-orders
+POST /api/receipts
+POST /api/stock-transfers
+POST /api/stock-transfers/{id}/ship
+POST /api/stock-transfers/{id}/receive
+POST /api/inventory-adjustments
+GET/POST /api/stock-counts
+GET/POST /api/sync/jobs
+GET /api/audit-logs
+```
 
 ## 评估
 
