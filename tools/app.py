@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from .platform_store import store
+from .store_factory import store
 from .schemas import (
     ApprovalDecision,
     ApprovalRead,

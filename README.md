@@ -65,6 +65,50 @@ npm run dev
 
 打开 `http://localhost:5173`。默认 API 地址是 `http://localhost:8000`，可通过 `VITE_API_BASE_URL` 覆盖。
 
+## PostgreSQL 本地运行
+
+创建数据库：
+
+```bash
+export PGPASSWORD=qwer5358
+createdb -h localhost -p 5432 -U postgres seller_copilot
+```
+
+如果数据库已存在，可以跳过创建。复制本地环境文件后确认使用 postgres 存储：
+
+```bash
+cp .env.example .env
+```
+
+`.env` 中应包含：
+
+```env
+SELLER_COPILOT_STORAGE=postgres
+DATABASE_URL=postgresql://postgres:qwer5358@localhost:5432/seller_copilot
+```
+
+执行 migration 并插入 100 条演示数据：
+
+```bash
+export DATABASE_URL=postgresql://postgres:qwer5358@localhost:5432/seller_copilot
+alembic upgrade head
+python -m tools.seed_postgres --reset --count 100
+```
+
+启动 API：
+
+```bash
+uvicorn tools.app:app --reload --port 8000
+```
+
+验证 legacy 聚合接口：
+
+```bash
+curl http://127.0.0.1:8000/product/SKU_001
+curl http://127.0.0.1:8000/inventory/SKU_001
+curl http://127.0.0.1:8000/api/inventory/balances
+```
+
 ## 一键本地栈
 
 ```bash
@@ -79,7 +123,20 @@ docker compose up --build
 - Web: `http://localhost:5173`
 - PostgreSQL: `localhost:5432`, database/user/password 均见 `.env.example`
 
-当前 API 默认仍是 mock-first in-memory 运行模式，保证 CLI demo 无需数据库即可运行。`alembic/versions/0001_inventory_platform.py` 提供 PostgreSQL 目标表结构，用于后续替换持久化 repository。
+Docker Compose 默认使用 PostgreSQL 模式，并在 API 容器启动时执行 `alembic upgrade head` 和 `python -m tools.seed_postgres --count 100`。
+
+如果旧的 Docker volume 已经用 `seller/seller` 初始化过，Postgres 不会自动改成新的 `postgres/qwer5358`。先检查：
+
+```bash
+docker compose down
+docker volume ls
+```
+
+只有确认要清空本地容器数据库时，再执行：
+
+```bash
+docker compose down -v
+```
 
 ## 运行 CLI 演示
 
