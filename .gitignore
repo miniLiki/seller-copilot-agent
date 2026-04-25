@@ -13,6 +13,7 @@ web/dist/
 __pycache__/
 *.py[cod]
 *.pyo
+.cache/
 
 # Runtime outputs and logs
 runs/

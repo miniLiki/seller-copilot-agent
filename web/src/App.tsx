@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Boxes, ClipboardList, FileClock, PackagePlus, RefreshCw, Search, Send, Shuffle, SlidersHorizontal, Warehouse as WarehouseIcon } from "lucide-react";
 import { api, InventoryBalance, InventoryMovement, ProductTemplate, Sku, Warehouse } from "./api/client";
+import { displayMovementType, displayRisk, displayStatus, zh } from "./i18n";
 
 type PageKey = "catalog" | "overview" | "warehouses" | "movements" | "purchasing" | "transfers" | "counts" | "adjustments" | "sync";
 
 const pages: Array<{ key: PageKey; label: string; icon: JSX.Element }> = [
-  { key: "catalog", label: "Catalog", icon: <Boxes size={18} /> },
-  { key: "overview", label: "Inventory", icon: <Search size={18} /> },
-  { key: "warehouses", label: "Warehouses", icon: <WarehouseIcon size={18} /> },
-  { key: "movements", label: "Movements", icon: <FileClock size={18} /> },
-  { key: "purchasing", label: "Purchasing", icon: <PackagePlus size={18} /> },
-  { key: "transfers", label: "Transfers", icon: <Shuffle size={18} /> },
-  { key: "counts", label: "Counts", icon: <ClipboardList size={18} /> },
-  { key: "adjustments", label: "Adjustments", icon: <SlidersHorizontal size={18} /> },
-  { key: "sync", label: "Sync", icon: <Send size={18} /> }
+  { key: "catalog", label: zh.pages.catalog, icon: <Boxes size={18} /> },
+  { key: "overview", label: zh.pages.overview, icon: <Search size={18} /> },
+  { key: "warehouses", label: zh.pages.warehouses, icon: <WarehouseIcon size={18} /> },
+  { key: "movements", label: zh.pages.movements, icon: <FileClock size={18} /> },
+  { key: "purchasing", label: zh.pages.purchasing, icon: <PackagePlus size={18} /> },
+  { key: "transfers", label: zh.pages.transfers, icon: <Shuffle size={18} /> },
+  { key: "counts", label: zh.pages.counts, icon: <ClipboardList size={18} /> },
+  { key: "adjustments", label: zh.pages.adjustments, icon: <SlidersHorizontal size={18} /> },
+  { key: "sync", label: zh.pages.sync, icon: <Send size={18} /> }
 ];
 
 function Field(props: { label: string; value: string; onChange: (value: string) => void; type?: string }) {
@@ -105,6 +106,14 @@ export function App() {
     }),
     { on_hand: 0, allocated: 0, available: 0, inbound: 0, damaged: 0, quarantine: 0 }
   );
+  const totalCards = [
+    { label: zh.headers.onHand, value: totals.on_hand },
+    { label: zh.headers.allocated, value: totals.allocated },
+    { label: zh.headers.available, value: totals.available },
+    { label: zh.headers.inbound, value: totals.inbound },
+    { label: zh.headers.damaged, value: totals.damaged },
+    { label: zh.headers.quarantine, value: totals.quarantine }
+  ];
 
   async function createSku() {
     if (!templates[0]) return;
@@ -195,9 +204,9 @@ export function App() {
         <header className="topbar">
           <div>
             <h1>{pages.find((item) => item.key === page)?.label}</h1>
-            <p>Inventory platform mock-first workspace</p>
+            <p>库存平台模拟工作台</p>
           </div>
-          <button className="iconButton" onClick={() => void load()} title="Refresh">
+          <button className="iconButton" onClick={() => void load()} title={zh.buttons.refresh}>
             <RefreshCw size={18} />
           </button>
         </header>
@@ -206,59 +215,59 @@ export function App() {
         {page === "catalog" && (
           <section className="stack">
             <div className="toolbar">
-              <Field label="Search" value={query} onChange={setQuery} />
-              <Field label="SKU code" value={skuForm.sku_code} onChange={(value) => setSkuForm({ ...skuForm, sku_code: value })} />
-              <Field label="Title" value={skuForm.title} onChange={(value) => setSkuForm({ ...skuForm, title: value })} />
-              <Field label="Price" value={skuForm.price} onChange={(value) => setSkuForm({ ...skuForm, price: value })} type="number" />
-              <button onClick={() => void createSku()}>Create SKU</button>
+              <Field label={zh.fields.search} value={query} onChange={setQuery} />
+              <Field label={zh.fields.skuCode} value={skuForm.sku_code} onChange={(value) => setSkuForm({ ...skuForm, sku_code: value })} />
+              <Field label={zh.fields.title} value={skuForm.title} onChange={(value) => setSkuForm({ ...skuForm, title: value })} />
+              <Field label={zh.fields.price} value={skuForm.price} onChange={(value) => setSkuForm({ ...skuForm, price: value })} type="number" />
+              <button onClick={() => void createSku()}>{zh.buttons.createSku}</button>
             </div>
-            <Table headers={["SKU", "Title", "Market", "Price", "Status"]} rows={filteredSkus.map((sku) => [sku.sku_code, sku.title, sku.market, sku.price, sku.status])} />
+            <Table headers={[zh.headers.sku, zh.headers.title, zh.headers.market, zh.headers.price, zh.headers.status]} rows={filteredSkus.map((sku) => [sku.sku_code, sku.title, sku.market, sku.price, displayStatus(sku.status)])} />
           </section>
         )}
 
         {page === "overview" && (
           <section className="stack">
             <div className="metrics">
-              {Object.entries(totals).map(([key, value]) => <div className="metric" key={key}><span>{key.replace("_", " ")}</span><strong>{value}</strong></div>)}
+              {totalCards.map((item) => <div className="metric" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}
             </div>
-            <Table headers={["SKU", "Warehouse", "On hand", "Allocated", "Available", "Inbound", "Damaged", "Quarantine", "Risk"]} rows={balances.map((b) => [b.sku_code, b.warehouse_code, b.on_hand, b.allocated, b.available_to_sell, b.inbound, b.damaged, b.quarantine, b.risk_level])} />
+            <Table headers={[zh.headers.sku, zh.headers.warehouse, zh.headers.onHand, zh.headers.allocated, zh.headers.available, zh.headers.inbound, zh.headers.damaged, zh.headers.quarantine, zh.headers.risk]} rows={balances.map((b) => [b.sku_code, b.warehouse_code, b.on_hand, b.allocated, b.available_to_sell, b.inbound, b.damaged, b.quarantine, displayRisk(b.risk_level)])} />
           </section>
         )}
 
-        {page === "warehouses" && <Table headers={["Code", "Name", "Status"]} rows={warehouses.map((w) => [w.warehouse_code, w.name, w.status])} />}
+        {page === "warehouses" && <Table headers={[zh.headers.code, zh.headers.name, zh.headers.status]} rows={warehouses.map((w) => [w.warehouse_code, w.name, displayStatus(w.status)])} />}
 
-        {page === "movements" && <Table headers={["Type", "Qty", "On hand delta", "Allocated delta", "Reason", "Created"]} rows={movements.map((m) => [m.movement_type, m.quantity, m.quantity_on_hand_delta, m.quantity_allocated_delta, m.reason ?? "", new Date(m.created_at).toLocaleString()])} />}
+        {page === "movements" && <Table headers={[zh.headers.type, zh.headers.qty, zh.headers.onHandDelta, zh.headers.allocatedDelta, zh.headers.reason, zh.headers.created]} rows={movements.map((m) => [displayMovementType(m.movement_type), m.quantity, m.quantity_on_hand_delta, m.quantity_allocated_delta, m.reason ?? "", new Date(m.created_at).toLocaleString()])} />}
 
         {page === "purchasing" && (
           <section className="stack">
-            <div className="toolbar"><Field label="Qty" value={commandQty} onChange={setCommandQty} type="number" /><button onClick={() => void createPurchaseOrder()}>Create PO</button></div>
-            <Table headers={["PO", "Status", "Lines"]} rows={purchaseOrders.map((po) => [po.po_number, po.status, po.lines.length])} />
+            <div className="toolbar"><Field label={zh.fields.qty} value={commandQty} onChange={setCommandQty} type="number" /><button onClick={() => void createPurchaseOrder()}>{zh.buttons.createPo}</button></div>
+            <Table headers={[zh.headers.po, zh.headers.status, zh.headers.lines]} rows={purchaseOrders.map((po) => [po.po_number, displayStatus(po.status), po.lines.length])} />
           </section>
         )}
 
         {page === "transfers" && (
           <section className="stack">
-            <div className="toolbar"><Field label="Qty" value={commandQty} onChange={setCommandQty} type="number" /><button onClick={() => void createTransfer()}>Create Transfer</button></div>
-            <Table headers={["Transfer", "Status", "Lines"]} rows={transfers.map((t) => [t.transfer_number, t.status, t.lines.length])} />
+            <div className="toolbar"><Field label={zh.fields.qty} value={commandQty} onChange={setCommandQty} type="number" /><button onClick={() => void createTransfer()}>{zh.buttons.createTransfer}</button></div>
+            <Table headers={[zh.headers.transfer, zh.headers.status, zh.headers.lines]} rows={transfers.map((t) => [t.transfer_number, displayStatus(t.status), t.lines.length])} />
           </section>
         )}
 
-        {page === "counts" && <Table headers={["Area", "Current support"]} rows={[["Stock counts", "API placeholder for count sessions and variance apply"], ["Orders", `${orders.length} sales orders reserved or shipped`]]} />}
+        {page === "counts" && <Table headers={[zh.headers.area, zh.headers.currentSupport]} rows={[["库存盘点", "API 已预留盘点会话与差异处理能力"], ["订单", `${orders.length} 个销售订单已预留或发货`]]} />}
 
         {page === "adjustments" && (
           <section className="stack">
             <div className="toolbar">
-              <Field label="Qty" value={commandQty} onChange={setCommandQty} type="number" />
-              {["receive", "allocate", "release", "ship", "damage", "return"].map((kind) => <button key={kind} onClick={() => void runInventoryCommand(kind)}>{kind}</button>)}
+              <Field label={zh.fields.qty} value={commandQty} onChange={setCommandQty} type="number" />
+              {["receive", "allocate", "release", "ship", "damage", "return"].map((kind) => <button key={kind} onClick={() => void runInventoryCommand(kind)}>{displayMovementType(kind)}</button>)}
             </div>
-            <Table headers={["Approval", "Type", "Status", "Reason"]} rows={approvals.map((a) => [a.id.slice(0, 8), a.request_type, a.status, a.reason ?? ""])} />
+            <Table headers={[zh.headers.approval, zh.headers.type, zh.headers.status, zh.headers.reason]} rows={approvals.map((a) => [a.id.slice(0, 8), displayMovementType(a.request_type), displayStatus(a.status), a.reason ?? ""])} />
           </section>
         )}
 
         {page === "sync" && (
           <section className="stack">
-            <div className="toolbar"><button onClick={() => void createSyncJob()}>Run Sync</button></div>
-            <Table headers={["Job", "Status", "Summary"]} rows={syncJobs.map((job) => [job.id.slice(0, 8), job.status, JSON.stringify(job.summary)])} />
+            <div className="toolbar"><button onClick={() => void createSyncJob()}>{zh.buttons.runSync}</button></div>
+            <Table headers={[zh.headers.job, zh.headers.status, zh.headers.summary]} rows={syncJobs.map((job) => [job.id.slice(0, 8), displayStatus(job.status), JSON.stringify(job.summary)])} />
           </section>
         )}
       </section>
